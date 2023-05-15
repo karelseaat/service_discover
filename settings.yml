@@ -1,0 +1,5 @@
+servers:
+  - socialgames:
+    proto: TCP
+    ip: 0.0.0.0
+    port: 4242
