@@ -1,51 +1,46 @@
- # service_discover GitHub Repository
+# service_discover
 
-Welcome to `service_discover`, a simple UDP-based client-server discovery system in Python. This project is designed for developers seeking an easy way to discover available services on a network.
+A lightweight UDP-based service discovery system in Python. Clients query a central server to learn about available services on the network.
 
 ## Requirements
 
-To get started with this project, you'll need the following:
+- Python 3.9+  
+- Dependencies (`twisted`, `pyyaml`) are managed via `Pipfile` — install with:
+  ```bash
+  pipenv install
+  ```
 
-1. Python 3.9 (as specified in `Pipfile`)
-2. The `twisted` and `pyyaml` libraries (automatically installed through `Pipfile`)
+## Files
 
-## Project Structure
-
-The repository includes the following files and directories:
-
-- `Pipfile`: A Pipenv file defining dependencies for this project.
-- `client.py`: The entry point for the client application, which connects to a discovery server and retrieves available service information.
-- `settings.yml`: Configuration file that defines the services and their settings (e.g., protocol, IP address, and port).
-- `message.py`: Helper module containing utility functions for handling messages between client and server.
-- `server.py`: The entry point for the discovery server application, which periodically broadcasts its own information to connected clients and receives service information from them.
+| File | Purpose |
+|------|---------|
+| `client.py` | Client script — connects to the discovery server and prints available services |
+| `server.py` | Server script — listens for client requests and broadcasts service info |
+| `message.py` | Shared utility for encoding/decoding discovery messages |
+| `settings.yml` | Configures services offered by the server |
+| `Pipfile` | Pipenv dependency specification |
 
 ## Usage
 
-### Running the Client
-
-To run the client, navigate to the project directory and execute:
+### Start the server
 
 ```bash
-python client.py
+pipenv run python server.py
 ```
 
-The client will continuously connect to the discovery server and display available services on your network.
+The server listens for incoming client requests and serves service definitions from `settings.yml`.
 
-### Running the Server
-
-To run the server, navigate to the project directory and execute:
+### Run the client
 
 ```bash
-python server.py
+pipenv run python client.py
 ```
 
-The server will broadcast its own information periodically and receive service information from clients.
+The client connects to the server and prints the list of known services in real time.
 
-## Customization
+## Configuration
 
-Service information for the discovery server is defined in `settings.yml`. Modify this file to add, remove, or update services as needed.
-
-Example:
+Edit `settings.yml` to define services:
 
 ```yaml
 servers:
@@ -55,14 +50,12 @@ servers:
       port: 4242
 ```
 
-This configuration defines a single service called `socialgames`, using the TCP protocol on IP address `0.0.0.0` and port `4242`.
+Add or remove entries as needed. The server reads this file each time it responds to a client.
 
 ## Contributing
 
-We welcome contributions from the community to help improve this project. Please see our [Contributing Guide](CONTRIBUTING.md) for more information on how to contribute.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-If you find `service_discover` useful, please consider starring the repository and sharing it with others!
+MIT — see [`LICENSE`](LICENSE) for terms.
