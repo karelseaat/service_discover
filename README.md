@@ -1,11 +1,11 @@
 # service_discover
 
-A lightweight UDP-based service discovery system in Python. Clients query a central server to learn about available services on the network.
+UDP-based service discovery. I built this because I needed a simple way for services to find each other on a local network—no external dependencies, no over-engineering.
 
 ## Requirements
 
 - Python 3.9+  
-- Dependencies (`twisted`, `pyyaml`) are managed via `Pipfile` — install with:
+- Dependencies (`twisted`, `pyyaml`) via `Pipfile`:
   ```bash
   pipenv install
   ```
@@ -14,11 +14,11 @@ A lightweight UDP-based service discovery system in Python. Clients query a cent
 
 | File | Purpose |
 |------|---------|
-| `client.py` | Client script — connects to the discovery server and prints available services |
-| `server.py` | Server script — listens for client requests and broadcasts service info |
-| `message.py` | Shared utility for encoding/decoding discovery messages |
-| `settings.yml` | Configures services offered by the server |
-| `Pipfile` | Pipenv dependency specification |
+| `client.py` | Queries the server and prints available services |
+| `server.py` | Answers client queries using definitions from `settings.yml` |
+| `message.py` | Encodes/decodes UDP packets (fixed 128-byte max) |
+| `settings.yml` | Server’s static service registry |
+| `Pipfile` | Pipenv dependency spec |
 
 ## Usage
 
@@ -28,7 +28,7 @@ A lightweight UDP-based service discovery system in Python. Clients query a cent
 pipenv run python server.py
 ```
 
-The server listens for incoming client requests and serves service definitions from `settings.yml`.
+The server listens on UDP port `9000` by default and reads `settings.yml` on every request. Changes to `settings.yml` take effect immediately.
 
 ### Run the client
 
@@ -36,11 +36,11 @@ The server listens for incoming client requests and serves service definitions f
 pipenv run python client.py
 ```
 
-The client connects to the server and prints the list of known services in real time.
+The client broadcasts a UDP packet, waits up to 2 seconds for a response, then prints services in YAML format.
 
 ## Configuration
 
-Edit `settings.yml` to define services:
+Edit `settings.yml` to add/remove services:
 
 ```yaml
 servers:
@@ -50,12 +50,12 @@ servers:
       port: 4242
 ```
 
-Add or remove entries as needed. The server reads this file each time it responds to a client.
+The server only serves services defined here. No dynamic registration—this is for static environments.
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE) for terms.
+MIT — see [`LICENSE`](LICENSE).
